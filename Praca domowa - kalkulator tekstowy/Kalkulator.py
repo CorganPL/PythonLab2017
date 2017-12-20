@@ -11,6 +11,20 @@ priorytet = {
 }
 
 operatory = ['+', '-', '*', '/']
+cyfry = ['0, ''1', '2', '3', '4', '5', '6', '7', '8', '9',
+         '-1', '-2', '-3', '-4', '-5', '-6', '-7', '-8', '-9']
+
+#zamiennik isdigit sprawdzajacy takze czy jset to liczba ujemna
+def czyLiczba(liczba):
+    list(liczba)
+    if(str(liczba[0]).isdigit() or (str(liczba[0] == '-') and len(liczba) > 1)):
+        i=1
+        while(i<len(liczba)):
+            if(not liczba[i].isdigit()):
+                return False
+            i+=1
+        return True
+    return False
 
 def zamienNaONP(dzialanie):
     dzialanie = list(dzialanie)
@@ -19,7 +33,10 @@ def zamienNaONP(dzialanie):
     #konkatenacja cyfr
     i=0
     while(i < len(dzialanie)-1):
-        while (not dzialanie[i].isdigit() and i < len(dzialanie)-1):
+        while (not dzialanie[i] in cyfry and i < len(dzialanie)-1):
+            if (dzialanie[i] == '(' and dzialanie[i+1] == '-'):             #wykrywanie liczb ujemnych
+                dzialanie[i+2] = str(dzialanie[i+1]) + str(dzialanie[i+2])
+                del dzialanie[i+1]
             i+=1
         if (i == len(dzialanie)-1):
             break
@@ -49,7 +66,7 @@ def zamienNaONP(dzialanie):
                     wyjscie.append(stos[-1])
                     stos.pop()
 
-        if (str(i).isdigit()):
+        if (czyLiczba(i)):
             wyjscie.append(i)
 
     return wyjscie
@@ -60,7 +77,7 @@ def wyliczONP(dzialanie):
     stos = []
 
     for i in dzialanie:
-        if (str(i).isdigit()):
+        if (czyLiczba(i)):
             stos.append(i)
         if (i in operatory):
             v2 = stos.pop()
@@ -81,10 +98,4 @@ def wyliczONP(dzialanie):
     return stos[0]
 
 dzialanie = raw_input()
-print wyliczONP( zamienNaONP(dzialanie) )
-
-
-
-
-
-
+print wyliczONP( zamienNaONP(dzialanie))
